@@ -23,3 +23,21 @@ def healthz():
 def metrics():
     uptime = int(time.time() - start_time)
     return {"uptime_seconds": uptime}
+
+from pydantic import BaseModel
+
+class ChatRequest(BaseModel):
+    message: str
+
+class ChatResponse(BaseModel):
+    reply: str
+
+@app.post("/chat", response_model=ChatResponse)
+def chat(request: ChatRequest):
+    user_message = request.message.strip()
+    if not user_message:
+        return {"reply": "No message provided"}
+    return {"reply": f"Echo: {user_message}"}
+
+
+
